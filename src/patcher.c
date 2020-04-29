@@ -114,7 +114,7 @@ create_b(unsigned char *from, void *to)
 	 */
 	ptrdiff_t delta = ((unsigned char *)to) - from;
 
-	debug_dump("%p: svc -> b 0x%lx\t# %p\n", from, delta, to);
+	debug_dump("%p: svc -> b %ld\t# %p\n", from, delta, to);
 
 	const ptrdiff_t MAX_OFFSET = 1 << 28;
 
@@ -219,10 +219,6 @@ create_mov_x6(uint8_t *code, uint64_t value)
 	codes[3] = 0xf2e00006 | (words[3] << 5); // movk x6, 0x...., lsl 48
 }
 
-static void test() {
-	debug_dump("syscall!!!!!\n");
-}
-
 /*
  * create_wrapper
  * Generates an assembly wrapper. Copies the template written in
@@ -246,7 +242,7 @@ create_wrapper(struct patch_desc *patch)
 	memcpy(dst, intercept_asm_wrapper_tmpl, tmpl_size);
 	create_mov_x6(dst + o_patch_desc_addr, (uintptr_t)patch);
 	create_mov_x6(dst + o_wrapper_level1_addr,
-				(uintptr_t)&test);
+				(uintptr_t)&intercept_wrapper);
 	dst += tmpl_size;
 
 	create_b(dst, patch->return_address);
