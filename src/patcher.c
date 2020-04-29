@@ -153,8 +153,6 @@ create_patch_wrappers(struct intercept_desc *desc)
 		 */
 		patch->return_address = patch->syscall_addr + 4;
 
-		mark_jump(desc, patch->return_address);
-
 		create_wrapper(patch);
 	}
 }

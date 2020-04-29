@@ -166,9 +166,6 @@ struct intercept_desc {
 	unsigned char *next_trampoline;
 };
 
-bool has_jump(const struct intercept_desc *desc, unsigned char *addr);
-void mark_jump(const struct intercept_desc *desc, const unsigned char *addr);
-
 void allocate_trampoline_table(struct intercept_desc *desc);
 void find_syscalls(struct intercept_desc *desc);
 
@@ -189,8 +186,6 @@ void activate_patches(struct intercept_desc *desc);
 #define PUSH_IMM_OPCODE 0x68
 #define NOP_OPCODE 0x90
 #define INT3_OPCODE 0xCC
-
-bool is_overwritable_nop(const struct intercept_disasm_result *ins);
 
 void create_b(unsigned char *from, void *to);
 
