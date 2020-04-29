@@ -248,7 +248,7 @@ crawl_text(struct intercept_desc *desc)
 			struct patch_desc *patch = add_new_patch(desc);
 
 			patch->containing_lib_path = desc->path;
-			patch->syscall_addr = code - 4;
+			patch->syscall_addr = code;
 
 			ptrdiff_t syscall_offset = patch->syscall_addr -
 			    (desc->text_start - desc->text_offset);
