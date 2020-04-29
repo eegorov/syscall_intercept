@@ -49,10 +49,6 @@
 .hidden intercept_routine_post_clone
 .type intercept_routine_post_clone, @function
 
-/* The boolean indicating whether YMM registers must saved */
-.global intercept_routine_must_save_ymm
-.hidden intercept_routine_must_save_ymm
-
 .text
 
 /*

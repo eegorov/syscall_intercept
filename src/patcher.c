@@ -514,8 +514,6 @@ static size_t tmpl_size;
 static ptrdiff_t o_patch_desc_addr;
 static ptrdiff_t o_wrapper_level1_addr;
 
-bool intercept_routine_must_save_ymm;
-
 static bool
 is_asm_wrapper_space_full(void)
 {
@@ -546,18 +544,6 @@ init_patcher(void)
 	o_patch_desc_addr = &intercept_asm_wrapper_patch_desc_addr - begin;
 	o_wrapper_level1_addr =
 		&intercept_asm_wrapper_wrapper_level1_addr - begin;
-
-	/*
-	 * has_ymm_registers -- checks if AVX instructions are supported,
-	 * thus YMM registers can be used on this CPU.
-	 *
-	 * this function is implemented in util.s
-	 *
-	 * XXX check for ZMM registers, and save/restore them!
-	 */
-	extern bool has_ymm_registers(void);
-
-	intercept_routine_must_save_ymm = has_ymm_registers();
 }
 
 /*
