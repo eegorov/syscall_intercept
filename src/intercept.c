@@ -122,7 +122,7 @@ struct wrapper_ret {
 	long rdx;
 };
 
-static void dump_context(struct context *context) {
+void dump_context(struct context *context) {
 	debug_dump("======= context begin =======\n");
 	for (int i = 0; i < 31; ++i) {
 		debug_dump("x%d\t= %16lx\n", i, context->x[i]);
@@ -606,8 +606,6 @@ intercept_routine(struct context *context)
 	int forward_to_kernel = true;
 	struct syscall_desc desc;
 	struct patch_desc *patch = context->patch_desc;
-
-	dump_context(context);
 
 	get_syscall_in_context(context, &desc);
 
