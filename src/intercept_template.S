@@ -63,52 +63,11 @@
  * needed for locals.
  */
 intercept_asm_wrapper_tmpl:
-	movq        $0x0, %rcx /* choose intercept_routine */
 
-0:	movq        %rsp, %r11 /* remember original rsp */
-	subq        $0x80, %rsp  /* avoid the red zone */
-	andq        $-16, %rsp /* align the stack */
-	subq        $0x20, %rsp /* allocate stack for some locals */
-	movq        %r11, (%rsp) /* orignal rsp on stack */
 intercept_asm_wrapper_patch_desc_addr:
-	movabsq     $0x000000000000, %r11
-	movq        %r11, 0x8 (%rsp) /* patch_desc pointer on stack */
+
 intercept_asm_wrapper_wrapper_level1_addr:
-	movabsq     $0x000000000000, %r11
-	callq       *%r11 /* call intercept_wrapper */
-	movq        (%rsp), %rsp /* restore original rsp */
-	/*
-	 * The intercept_wrapper function did restore all registers to their
-	 * original state, except for rax, rsp, rip, and r11.
-	 *
-	 * If r11 is zero, rax contains a syscall number, and that syscall
-	 *  is executed here.
-	 * If r11 is 1, rax contains the return value of the hooked syscall.
-	 * If r11 is 2, a clone syscall is executed here.
-	 */
-	cmp         $0x0, %r11
-	je          2f
-	cmp         $0x1, %r11
-	je          3f
-	cmp         $0x2, %r11
-	je          1f
-
-	hlt /* r11 value is invalid? */
-
-1:
-	/* execute the clone syscall in its original context */
-	syscall
-	movq        $0x1, %rcx /* choose intercept_routine_post_clone */
-	/*
-	 * Now goto 0, and call the C function named
-	 * intercept_routine_post_clone both in the parent thread, adn the
-	 * child thread.
-	 */
-	jmp         0b
-
-2:
-	syscall
-3:
+	
 intercept_asm_wrapper_tmpl_end:
 	/*
 	 * This template must be appended here with a
