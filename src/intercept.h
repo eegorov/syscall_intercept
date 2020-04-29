@@ -89,29 +89,8 @@ struct patch_desc {
 	/* the new asm wrapper created */
 	unsigned char *asm_wrapper;
 
-	/* the first byte overwritten in the code */
-	unsigned char *dst_jmp_patch;
-
 	/* the address to jump back to */
 	unsigned char *return_address;
-
-	/*
-	 * Describe up to three instructions surrounding the original
-	 * syscall instructions. Sometimes just overwritting the two
-	 * direct neighbors of the syscall is not enough, ( e.g. if
-	 * both the directly preceding, and the directly following are
-	 * single byte instruction, that only gives 4 bytes of space ).
-	 */
-	struct intercept_disasm_result preceding_ins_2;
-	struct intercept_disasm_result preceding_ins;
-	struct intercept_disasm_result following_ins;
-	bool uses_prev_ins_2;
-	bool uses_prev_ins;
-	bool uses_next_ins;
-
-	bool uses_nop_trampoline;
-
-	struct range nop_trampoline;
 };
 
 /*
@@ -213,7 +192,7 @@ void activate_patches(struct intercept_desc *desc);
 
 bool is_overwritable_nop(const struct intercept_disasm_result *ins);
 
-void create_jump(unsigned char opcode, unsigned char *from, void *to);
+void create_b(unsigned char *from, void *to);
 
 const char *cmdline;
 

@@ -63,13 +63,30 @@
  * needed for locals.
  */
 intercept_asm_wrapper_tmpl:
-
+	# save
+	stp	lr, x6, [sp, #-16]!
 intercept_asm_wrapper_patch_desc_addr:
-
+	# load patch_desc address
+	movz x6, 0
+	movk x6, 0, lsl 16
+	movk x6, 0, lsl 32
+	movk x6, 0, lsl 48
+	# save patch_desc pointer on stack
+	str	x6, [sp, #-16]!
 intercept_asm_wrapper_wrapper_level1_addr:
-	
+	# load asm_wrapper address
+	movz x6, 0
+	movk x6, 0, lsl 16
+	movk x6, 0, lsl 32
+	movk x6, 0, lsl 48
+	# call asm_wrapper
+	blr x6
+	# restore
+	add sp, sp, #16
+	ldp lr, x6, [sp], #16
 intercept_asm_wrapper_tmpl_end:
 	/*
 	 * This template must be appended here with a
 	 * jump back to the intercepted code.
 	 */
+	# b xxx
