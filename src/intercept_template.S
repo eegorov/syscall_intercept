@@ -63,6 +63,12 @@
  * needed for locals.
  */
 intercept_asm_wrapper_tmpl:
+	# clone
+	cmp x8, #220
+	bne 0f
+	svc #0
+	b intercept_asm_wrapper_tmpl_end
+0:
 	# save
 	stp	lr, x6, [sp, #-16]!
 intercept_asm_wrapper_patch_desc_addr:

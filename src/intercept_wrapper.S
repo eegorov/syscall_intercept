@@ -104,7 +104,8 @@ intercept_wrapper:
     bl intercept_routine
     mov lr, x29
 
-    # Restore all GPRs except x0, x1
+    # Restore all GPRs except x0
+    ldr x1, [sp, #0x8]
     ldp x2, x3, [sp, #0x10]
     ldp x4, x5, [sp, #0x20]
     ldp x6, x7, [sp, #0x30]
