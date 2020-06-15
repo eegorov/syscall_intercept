@@ -336,7 +336,7 @@ allocate_trampoline_table(struct intercept_desc *desc)
 		 */
 		guess = desc->text_end - INT32_MAX;
 		guess = (unsigned char *)(((uintptr_t)guess)
-				& ~((uintptr_t)(0xfff))) + 0x1000;
+				& ~((uintptr_t)(0xffff))) + 0x10000;
 	}
 
 	if ((uintptr_t)guess < get_min_address())

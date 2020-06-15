@@ -80,7 +80,7 @@
 
 #include <stdio.h>
 
-#define PAGE_SIZE ((size_t)0x1000)
+#define PAGE_SIZE ((size_t)0x10000)
 
 /* The size of a trampoline jump, jmp instruction + pointer */
 enum { TRAMPOLINE_SIZE = 6 + 8 };
