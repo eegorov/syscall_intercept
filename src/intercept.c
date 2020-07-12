@@ -111,10 +111,11 @@ void __attribute__((noreturn)) xlongjmp(long rip, long rsp, long rax);
  * AVX instructions.
  */
 struct context {
-	long x[31];
-	long sp;
+	long x[20];
 	long d8to15[8];
 	struct patch_desc *patch_desc;
+	long _pad;
+	long lr;
 };
 
 struct wrapper_ret {
@@ -124,13 +125,14 @@ struct wrapper_ret {
 
 void dump_context(struct context *context) {
 	debug_dump("======= context begin =======\n");
-	for (int i = 0; i < 31; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		debug_dump("x%d\t= %16lx\n", i, context->x[i]);
 	}
-	debug_dump("sp\t= %16lx\n", context->sp);
 	for (int i = 0; i < 8; ++i) {
 		debug_dump("d%d\t= %16lx\n", i + 8, context->d8to15[i]);
 	}
+	debug_dump("lr\t= %16lx\n", context->lr);
+	debug_dump("patch_desc\t= %16lx\n", (long)context->patch_desc);
 	debug_dump("======== context end ========\n");
 }
 

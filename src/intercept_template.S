@@ -89,7 +89,7 @@ intercept_asm_wrapper_wrapper_level1_addr:
 	blr x6
 	# restore
 	add sp, sp, #16
-	ldp lr, x6, [sp], #16
+	ldp lr, xzr, [sp], #16
 intercept_asm_wrapper_tmpl_end:
 	/*
 	 * This template must be appended here with a
