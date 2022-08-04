@@ -189,6 +189,6 @@ void activate_patches(struct intercept_desc *desc);
 
 void create_b(unsigned char *from, void *to);
 
-const char *cmdline;
+extern const char *cmdline;
 
 #endif
