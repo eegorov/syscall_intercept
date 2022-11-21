@@ -215,6 +215,6 @@ bool is_overwritable_nop(const struct intercept_disasm_result *ins);
 
 void create_jump(unsigned char opcode, unsigned char *from, void *to);
 
-const char *cmdline;
+extern const char *cmdline;
 
 #endif
