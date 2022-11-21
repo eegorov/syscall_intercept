@@ -1,5 +1,5 @@
 #
-# Copyright 2017, Intel Corporation
+# Copyright 2020, Intel Corporation
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -29,34 +29,31 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# A simple test with a syscall preceded by an lea instruction, using
+# RIP relative addressing. Relocating such instruction requires
+# special code.
 
-if(FILTER_PLUS_ONECHAR)
-	string(SUBSTRING "${FILTER_PLUS_ONECHAR}" 1 -1 FILTER)
-endif()
+.intel_syntax noprefix
 
-if(FILTER)
-	set(ENV{INTERCEPT_HOOK_CMDLINE_FILTER} ${FILTER})
-	message("FILTER: ${FILTER}")
-endif()
+.global text_start;
+.global text_end;
+.global asm_wrapper_start;
+.global asm_wrapper_end;
 
-if(LIB_FILE)
-if(TEST_EXTRA_PRELOAD)
-	set(ENV{LD_PRELOAD} ${TEST_EXTRA_PRELOAD}:${LIB_FILE})
-else()
-	set(ENV{LD_PRELOAD} ${LIB_FILE})
-endif()
-endif()
+#include "mock_trampoline_table.S"
 
-if(INTERCEPT_ALL)
-	set(ENV{INTERCEPT_ALL_OBJS} 1)
-else()
-	unset(ENV{INTERCEPT_ALL_OBJS})
-endif()
+.text
 
-execute_process(COMMAND ${TEST_PROG} ${TEST_PROG_ARGS} RESULT_VARIABLE HAD_ERROR)
-
-unset(ENV{LD_PRELOAD})
-
-if(HAD_ERROR)
-	message(FATAL_ERROR "Error: ${HAD_ERROR}")
-endif()
+text_start:
+		cmp     rax, -1
+		cmp     rax, -1
+		lea     rdi, [rip + 0x19cf05]
+		syscall
+		cmp     rax, -1
+		cmp     rax, -1
+text_end:
+asm_wrapper_start:
+		cmp     rax, -1
+		.byte   0x48
+		.byte   0xbf
+asm_wrapper_end:
