@@ -95,6 +95,8 @@ syscall_error_code(long result)
  */
 int syscall_hook_in_process_allowed(void);
 
+int syscall_skip_this_thread(void);
+
 #ifdef __cplusplus
 }
 #endif

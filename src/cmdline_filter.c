@@ -70,6 +70,7 @@ cmdline_match(const char *filter)
 	return strcmp(cmdline + clen - flen, filter) == 0;
 }
 
+static __thread int skip_thread = 0;
 /*
  * syscall_hook_in_process_allowed - checks if a filter should be applied
  * for processes. If the users requests it (via an environment variable) the
@@ -82,6 +83,9 @@ syscall_hook_in_process_allowed(void)
 	static bool is_decided;
 	static int result;
 
+        if (skip_thread)
+            return false;
+
 	if (is_decided)
 		return result;
 
@@ -92,4 +96,10 @@ syscall_hook_in_process_allowed(void)
 	is_decided = true;
 
 	return result;
+}
+
+int
+syscall_skip_this_thread(void)
+{
+    skip_thread = 1;
 }
