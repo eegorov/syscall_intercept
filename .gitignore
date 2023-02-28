@@ -4,3 +4,4 @@ tags
 /.settings
 /build-deb
 /syscall_intercept-*.tar.gz
+build/
