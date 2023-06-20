@@ -68,7 +68,8 @@ int (*intercept_hook_point)(long syscall_number,
 			long *result)
 	__attribute__((visibility("default")));
 
-void (*intercept_hook_point_clone_child)(void)
+void (*intercept_hook_point_clone_child)(long nr, long arg0, long arg1,
+	long arg2, long arg3, long arg4, long arg5)
 	__attribute__((visibility("default")));
 void (*intercept_hook_point_clone_parent)(long)
 	__attribute__((visibility("default")));
@@ -712,7 +713,13 @@ intercept_routine_post_clone(struct context *context)
 {
 	if (context->rax == 0) {
 		if (intercept_hook_point_clone_child != NULL)
-			intercept_hook_point_clone_child();
+			intercept_hook_point_clone_child(0,
+							context->rdi,
+							context->rsi,
+							context->rdx,
+							context->rbx,
+							context->r8,
+							context->r9);
 	} else {
 		if (intercept_hook_point_clone_parent != NULL)
 			intercept_hook_point_clone_parent(context->rax);

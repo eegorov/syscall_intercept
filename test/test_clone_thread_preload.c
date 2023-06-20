@@ -103,8 +103,15 @@ hook(long syscall_number,
  * of the clone syscall.
  */
 static void
-hook_child(void)
+hook_child(long nr, long a0, long a1, long a2, long a3, long a4, long a5)
 {
+	(void) nr;
+	(void) a0;
+	(void) a1;
+	(void) a2;
+	(void) a3;
+	(void) a4;
+	(void) a5;
 	static const char msg[] = "clone_hook_child called\n";
 
 	assert(flags != -1);
