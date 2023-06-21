@@ -85,13 +85,16 @@ intercept_asm_wrapper_wrapper_level1_addr:
 	 *  is executed here.
 	 * If r11 is 1, rax contains the return value of the hooked syscall.
 	 * If r11 is 2, a clone syscall is executed here.
+	 * If r11 is 3, a clone3 syscall is executed here.
 	 */
 	cmp         $0x0, %r11
-	je          2f
+	je          4f
 	cmp         $0x1, %r11
-	je          3f
+	je          4f
 	cmp         $0x2, %r11
 	je          1f
+	cmp         $0x3, %r11
+	je          2f
 
 	hlt /* r11 value is invalid? */
 
@@ -101,14 +104,24 @@ intercept_asm_wrapper_wrapper_level1_addr:
 	movq        $0x1, %rcx /* choose intercept_routine_post_clone */
 	/*
 	 * Now goto 0, and call the C function named
-	 * intercept_routine_post_clone both in the parent thread, adn the
+	 * intercept_routine_post_clone both in the parent thread, and the
 	 * child thread.
 	 */
 	jmp         0b
 
 2:
+	/* execute the clone3 syscall in its original context */
 	syscall
+	movq        $0x2, %rcx /* choose intercept_routine_post_clone */
+	/*
+	 * Now goto 0, and call the C function named
+	 * intercept_routine_post_clone both in the parent thread, and the
+	 * child thread.
+	 */
+	jmp         0b
 3:
+	syscall
+4:
 intercept_asm_wrapper_tmpl_end:
 	/*
 	 * This template must be appended here with a

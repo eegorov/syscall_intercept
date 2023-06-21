@@ -162,14 +162,18 @@ intercept_wrapper:
 	movaps      %xmm7, 0x200 (%rsp)
 
 1:
-	/* argument passed to intercept_routine */
+	/* first argument passed to intercept_routine */
 	leaq        0xe8 (%rsp), %rdi
 
 	cmp         $0x1, %rcx /* which function should be called? */
 	je          0f
+	cmp         $0x2, %rcx /* which function should be called? */
+	je          0f
 	call        intercept_routine
 	jmp         1f
-0:	call        intercept_routine_post_clone
+0:
+	movq	    %rcx, %rsi /* second argument passed to intercept_routine_post_clone: 1 -> SYS_clone, 2 -> SYS_clone3 */
+	call        intercept_routine_post_clone
 1:
 	/*
 	 * At this point, the return value of the C

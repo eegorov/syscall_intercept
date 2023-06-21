@@ -685,7 +685,7 @@ intercept_routine(struct context *context)
 		else if (desc.nr == SYS_clone3 &&
 			((struct clone_args *)desc.args[0])->stack != 0) {
 			return (struct wrapper_ret){
-				.rax = context->rax, .rdx = 2 };
+				.rax = context->rax, .rdx = 3 };
 		}
 #endif
 		else
@@ -725,13 +725,16 @@ intercept_routine(struct context *context)
  * intercept_routine_post_clone
  * The routine called by an assembly wrapper when a clone syscall returns zero,
  * and a new stack pointer is used in the child thread.
+ * clone_type == 1 -> SYS_clone
+ * clone_type == 2 -> SYS_clone3
  */
 struct wrapper_ret
-intercept_routine_post_clone(struct context *context)
+intercept_routine_post_clone(struct context *context, long clone_type)
 {
 	if (context->rax == 0) {
+		long nr = (clone_type == 1) ? SYS_clone : SYS_clone3;
 		if (intercept_hook_point_clone_child != NULL)
-			intercept_hook_point_clone_child(0,
+			intercept_hook_point_clone_child(nr,
 							context->rdi,
 							context->rsi,
 							context->rdx,
