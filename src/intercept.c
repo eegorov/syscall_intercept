@@ -699,6 +699,24 @@ intercept_routine(struct context *context)
 	}
 
 	intercept_log_syscall(patch, &desc, KNOWN, result);
+	if (((desc.nr == SYS_clone && desc.args[1] == 0) ||
+#ifdef SYS_clone3
+		(desc.nr == SYS_clone3 &&
+		((struct clone_args *)desc.args[0])->stack == 0)) &&
+#else
+		0) &&
+#endif
+		result == 0) {
+		if (intercept_hook_point_clone_child != NULL) {
+			intercept_hook_point_clone_child(desc.nr,
+							desc.args[0],
+							desc.args[1],
+							desc.args[2],
+							desc.args[3],
+							desc.args[4],
+							desc.args[5]);
+		}
+	}
 
 	return (struct wrapper_ret){ .rax = result, .rdx = 1 };
 }
